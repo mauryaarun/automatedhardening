@@ -1,0 +1,44 @@
+# Windows Hardening Script
+
+# Disable Windows Remote Management (WinRM)
+Write-Host "Disabling WinRM service..."
+Set-Service -Name 'winrm' -StartupType Disabled
+Stop-Service -Name 'winrm'
+
+# Disable Remote Desktop Protocol (RDP)
+Write-Host "Disabling Remote Desktop Protocol (RDP)..."
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 1
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0
+
+# Configure Windows Firewall
+Write-Host "Configuring Windows Firewall..."
+New-NetFirewallRule -Name "Block Inbound NetBIOS" -Action Block -Direction Inbound -Protocol UDP -LocalPort 137
+New-NetFirewallRule -Name "Block Inbound SMB" -Action Block -Direction Inbound -Protocol TCP -LocalPort 445
+
+# Enable Windows Defender Antivirus
+Write-Host "Enabling Windows Defender Antivirus..."
+Set-MpPreference -DisableRealtimeMonitoring $false
+Start-MpScan
+
+# Disable SMBv1
+Write-Host "Disabling SMBv1..."
+Set-SmbServerConfiguration -EnableSMB1Protocol $false
+Set-SmbClientConfiguration -EnableSMB1Protocol $false
+
+# Disable PowerShell v2
+Write-Host "Disabling PowerShell v2..."
+Set-ItemProperty -Path "HKLM:\Software\Microsoft\PowerShell\1\ShellIds" -Name "Disabled" -Value 1
+
+# Disable the guest account
+Write-Host "Disabling the guest account..."
+New-LocalUser -Name "Guest" -Description "Disabled guest account" -AccountNeverExpires $true -UserMayNotChangePassword $false -PasswordNeverExpires $false -Enabled $false
+
+# Rename the administrator account to 'root'
+Write-Host "Renaming the administrator account to 'root'..."
+Rename-LocalUser -Name "Administrator" -NewName "root"
+
+Write-Host "Windows hardening is complete."
+
+# Optional: Restart the computer to apply changes
+# Restart-Computer -Force
+
