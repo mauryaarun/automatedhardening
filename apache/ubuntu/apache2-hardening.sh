@@ -35,8 +35,11 @@ a2enconf no-indexes
 # Remove default Apache documentation
 rm -rf /var/www/html/*
 
+
 # Enable security headers, HSTS, and HTTP to HTTPS redirection
 a2enmod headers
+a2enmod rewrite
+
 cat <<EOF > /etc/apache2/conf-available/security-headers.conf
 Header always set X-Content-Type-Options "nosniff"
 Header always set X-Frame-Options "SAMEORIGIN"
@@ -44,15 +47,25 @@ Header always set X-XSS-Protection "1; mode=block"
 Header always set Content-Security-Policy "default-src 'self'"
 Header always set Referrer-Policy "no-referrer"
 Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+
+RewriteEngine on
+RewriteCond %{HTTP_COOKIE} !^.*HttpOnly; Secure; SameSite=Strict.*$ [NC]
+RewriteRule ^ - [CO=Set-Cookie:%{HTTP_COOKIE};HttpOnly; Secure; SameSite=Strict:302=/$]
+
+
 EOF
 a2enconf security-headers
 
 # Configure HTTP to HTTPS redirection
-a2enmod rewrite
+
 cat <<EOF > /etc/apache2/conf-available/https-redirect.conf
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+
+
 EOF
 a2enconf https-redirect
 

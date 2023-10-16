@@ -42,6 +42,13 @@ Header always set X-XSS-Protection "1; mode=block"
 Header always set Content-Security-Policy "default-src 'self'"
 Header always set Referrer-Policy "no-referrer"
 Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+
+RewriteEngine on
+RewriteCond %{HTTP_COOKIE} !^.*HttpOnly; Secure; SameSite=Strict.*$ [NC]
+RewriteRule ^ - [CO=Set-Cookie:%{HTTP_COOKIE};HttpOnly; Secure; SameSite=Strict:302=/$]
+
+
 EOF
 
 # Configure HTTP to HTTPS redirection
