@@ -48,6 +48,10 @@ cd initial-automated-hardening-of-server
 
 # Windows
 ./windows-hardening.ps
+
+# Apache/HTTPD Webserver 
+./apache2-hardening.sh
+./httpd-hardening.sh
 ```
 
 4. Follow the instructions on the screen.
