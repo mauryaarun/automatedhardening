@@ -1,6 +1,8 @@
-**Initial Automated Hardening of Servers**
+**Initial Automated Server Security Configuration**
 
-This GitHub project provides a set of scripts to automate the initial hardening of a server. The scripts are designed to be generic and can be used on a variety of Linux and Windows servers.
+This project provides a set of scripts to automate the initial hardening of a server. The scripts are designed to be generic and can be used on a variety of Linux and Windows servers.
+
+We request you to read the script before executing. You have to change the script accoring to your need.
 
 The scripts cover the following hardening tasks:
 
@@ -38,11 +40,14 @@ cd initial-automated-hardening-of-server
 3. Run the appropriate script for your operating system:
 
 ```
-# Linux
-./harden_linux.sh
+# Redhat Linux
+./rhel-hardening.sh
+
+# Ubuntu Linux
+./ubuntu-hardening.sh
 
 # Windows
-./harden_windows.sh
+./windows-hardening.ps
 ```
 
 4. Follow the instructions on the screen.
